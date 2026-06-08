@@ -1,17 +1,17 @@
-# Contribution #1: feat: Respect RateLimit headers in default REST backoff implementation
+# Contribution #1: Add compatibility test for $toHashedIndexKey (second pass)
 
 **Contribution Number:** 1  
 **Student:** Rabiul Hossain  
-**Issue:** https://github.com/meltano/sdk/issues/2012  
+**Issue:** https://github.com/documentdb/functional-tests/issues/209  
 **Status:** Phase I — Complete
 
 ---
 
 ## Why I Chose This Issue
 
-I chose this issue because it sits at the intersection of API engineering and reliability — two areas I'm actively building skills in. The Meltano SDK is a widely-used Python framework for building Singer taps and targets, and rate limiting is a real-world problem that every developer hitting external REST APIs eventually encounters. Right now, the SDK's default backoff implementation ignores `RateLimit` and `Retry-After` headers that APIs send back, meaning it falls back to a generic exponential backoff instead of respecting what the server is actually telling it to do. That's both inefficient and potentially disrespectful to API providers' stated limits.
+I chose this issue because it sits at the intersection of database compatibility testing and backend engineering — two areas I want to build deeper experience in. DocumentDB is Amazon's MongoDB-compatible database service, and this project (documentdb/functional-tests) exists to verify that DocumentDB correctly implements MongoDB operators and expressions. The `$toHashedIndexKey` operator is a MongoDB-specific function that computes the hashed value of a field as it would appear in a hashed index — a meaningful concept in distributed database design that touches on how MongoDB partitions and shards data.
 
-This issue is a strong fit for my skills because I'm comfortable with Python, familiar with REST API patterns, and have worked with HTTP headers and request/response cycles before. I'm also motivated by the learning opportunity: the SDK's backoff logic touches `requests-cache`, `backoff`, and HTTP response handling in ways I'll have to understand deeply before I can change them safely. The issue is labeled "Accepting Pull Requests," has active maintainer engagement, and has a clear definition of what "done" looks like — the SDK should parse `RateLimit-Reset`, `RateLimit-Remaining`, and `Retry-After` headers and use those values to drive backoff timing instead of ignoring them.
+This issue is a strong fit for my current skills because it requires writing structured test cases in Python, understanding operator behavior from documentation, and following an established test pattern in an active open source repo. It's labeled "good first issue," has a clear and bounded scope (add test coverage for one operator), and is part of a well-organized parent issue with active maintainer engagement. What "done" looks like is unambiguous: a passing compatibility test that validates `$toHashedIndexKey` behaves consistently between MongoDB and DocumentDB. I'm also motivated by the learning opportunity — understanding how database compatibility test suites are structured is directly relevant to backend and data engineering roles I'm targeting.
 
 ---
 
@@ -19,21 +19,24 @@ This issue is a strong fit for my skills because I'm comfortable with Python, fa
 
 ### Problem Description
 
-The Meltano SDK's default REST stream implementation uses a generic exponential backoff strategy when it receives rate-limit responses (typically HTTP 429) from APIs. It does not read the `RateLimit-Reset`, `RateLimit-Remaining`, or `Retry-After` headers that many APIs include in their responses — headers that tell the client exactly how long to wait before retrying. As a result, the SDK may wait too long or too short, and may make unnecessary additional requests that further violate the API's rate limits.
+The `documentdb/functional-tests` repository tracks compatibility test coverage between DocumentDB and MongoDB. The `$toHashedIndexKey` expression operator currently has no compatibility test, meaning there is no automated verification that DocumentDB handles this operator correctly. This is part of a broader second-pass effort to add test coverage for 20 remaining expression operators.
 
 ### Expected Behavior
 
-When the SDK receives a rate-limit response from a REST API that includes `RateLimit-Reset`, `RateLimit-Remaining`, or `Retry-After` headers, it should parse those headers and use the indicated wait time to drive its retry/backoff behavior — rather than defaulting to a fixed or exponential backoff interval.
+A compatibility test for `$toHashedIndexKey` should exist in the test suite that:
+- Exercises the operator against a DocumentDB instance
+- Validates that the output matches the expected MongoDB behavior
+- Follows the same structure and conventions as other compatibility tests in the repository
 
 ### Current Behavior
 
-The SDK's backoff logic ignores rate limit headers entirely. Every rate-limited response is handled with the same generic backoff strategy regardless of what the API is communicating in its response headers.
+No test exists for `$toHashedIndexKey`. The operator has no automated compatibility coverage in the test suite.
 
 ### Affected Components
 
-- The default REST backoff/retry logic in the Meltano SDK (likely in `singer_sdk/streams/rest.py` or a related backoff utility module)
-- HTTP response handling in the base REST stream class
-- Potentially the `backoff` library integration and how wait functions are configured
+- The `documentdb/functional-tests` test suite
+- The relevant test file or directory for expression operator tests
+- Potentially a test data or fixture file if the pattern requires it
 
 ---
 
@@ -165,7 +168,7 @@ Using UMPIRE framework (adapted):
 
 ## Resources Used
 
-- [Meltano SDK Docs](https://sdk.meltano.com)
-- [GitHub Issue #2012](https://github.com/meltano/sdk/issues/2012)
-- [requests HTTP library docs](https://docs.python-requests.org)
-- [backoff library docs](https://github.com/litl/backoff)
+- [documentdb/functional-tests repo](https://github.com/documentdb/functional-tests)
+- [GitHub Issue #209](https://github.com/documentdb/functional-tests/issues/209)
+- [MongoDB $toHashedIndexKey docs](https://www.mongodb.com/docs/manual/reference/operator/aggregation/toHashedIndexKey/)
+- [Parent tracking issue #19](https://github.com/documentdb/functional-tests/issues/19)
