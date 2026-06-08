@@ -9,10 +9,31 @@
 
 ## Why I Chose This Issue
 
-I chose this issue because it sits at the intersection of database compatibility testing and backend engineering — two areas I want to build deeper experience in. DocumentDB is Amazon's MongoDB-compatible database service, and this project (documentdb/functional-tests) exists to verify that DocumentDB correctly implements MongoDB operators and expressions. The `$toHashedIndexKey` operator is a MongoDB-specific function that computes the hashed value of a field as it would appear in a hashed index — a meaningful concept in distributed database design that touches on how MongoDB partitions and shards data.
+## Why I Chose This Issue
 
-This issue is a strong fit for my current skills because it requires writing structured test cases in Python, understanding operator behavior from documentation, and following an established test pattern in an active open source repo. It's labeled "good first issue," has a clear and bounded scope (add test coverage for one operator), and is part of a well-organized parent issue with active maintainer engagement. What "done" looks like is unambiguous: a passing compatibility test that validates `$toHashedIndexKey` behaves consistently between MongoDB and DocumentDB. I'm also motivated by the learning opportunity — understanding how database compatibility test suites are structured is directly relevant to backend and data engineering roles I'm targeting.
+I chose issue #209 "Add compatibility test for $toHashedIndexKey (second pass)" 
+because it aligns with my Python experience and my goal to get hands-on with 
+real-world database compatibility testing. The issue is labeled "good first issue," 
+has no assignee, and has a clear definition of done.
 
+I'm interested in this because:
+1. I'm comfortable with Python and pytest, so I can focus on understanding 
+   the codebase rather than fighting the language
+2. The scope is well-bounded — one operator, one test file, following an 
+   existing pattern in the repo
+3. The maintainer actively labeled and organized this issue 3 weeks ago, 
+   signaling the project is healthy and PRs are being reviewed
+4. I want to learn how large-scale compatibility test suites are structured — 
+   this is directly relevant to backend and data engineering roles I'm targeting
+
+From reading the issue and the parent tracking issue #19, I understand the 
+current problem is that there is no automated test verifying that DocumentDB 
+correctly implements the $toHashedIndexKey operator consistent with MongoDB 
+behavior. My contribution will close that gap by adding a passing compatibility 
+test following the repo's existing test patterns.
+
+Left a comment on the issue introducing myself as a CodePath AI301 student 
+and expressing intent to work on it.
 ---
 
 ## Understanding the Issue
